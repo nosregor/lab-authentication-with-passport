@@ -51,10 +51,25 @@ router.post('/signup', (req, res, next) => {
     });
 });
 
+router.get('/login', (req, res, next) => {
+  res.render('passport/login', { message: req.flash('error') });
+});
+
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+  failureFlash: true,
+  passReqToCallback: true,
+}));
 
 router.get('/private-page', ensureLogin.ensureLoggedIn(), (req, res) => {
   res.render('passport/private', { user: req.user });
 });
 
+
+router.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/login');
+});
 
 module.exports = router;
